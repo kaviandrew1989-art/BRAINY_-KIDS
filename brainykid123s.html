@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainy Kids 🧠</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ font-family:'Trebuchet MS',Arial,sans-serif;
+ background:#f5f2ff;color:#29234b;
+}
+header{
+ background:linear-gradient(120deg,#5135a8,#9761e8,#ee8cbe);
+ color:white;padding:35px 7%;text-align:center;
+}
+header h1{font-size:40px;margin:12px}
+header p{font-size:17px}
+.owl{font-size:90px}
+nav{
+ background:white;padding:17px;display:flex;
+ justify-content:center;gap:12px;flex-wrap:wrap;
+ box-shadow:0 3px 12px #ddd;
+ position:sticky;top:0;z-index:5;
+}
+button,select,input{font:inherit}
+nav button,.btn{
+ border:0;background:#7452cf;color:white;
+ padding:12px 18px;border-radius:12px;
+ cursor:pointer;font-weight:bold;
+}
+button:hover{filter:brightness(.9)}
+.container{width:92%;max-width:1100px;margin:30px auto}
+.card{
+ background:white;padding:25px;border-radius:22px;
+ box-shadow:0 5px 20px #ded7f2;margin-bottom:22px;
+}
+h2{color:#6949c1;margin-bottom:15px}
+input,select{
+ padding:13px;border:2px solid #ddd1fa;
+ border-radius:10px;margin:7px;width:min(100%,280px);
+}
+.grid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+ gap:18px;
+}
+.subject{
+ padding:23px;border-radius:20px;background:white;
+ box-shadow:0 4px 15px #ddd5f0;
+ transition:.25s;
+}
+.subject:hover{transform:translateY(-6px)}
+.subject .emoji{font-size:45px}
+.subject button{margin-top:15px;width:100%}
+#quiz{display:none}
+#question{font-size:21px;line-height:1.5;margin:20px 0}
+.option{
+ display:block;width:100%;text-align:left;
+ background:#f0ebff;color:#392d68;
+ border:2px solid transparent;padding:15px;
+ margin:9px 0;border-radius:12px;cursor:pointer;
+}
+.option:hover{border-color:#8968da}
+.option:disabled{opacity:.85;cursor:default}
+.correct{background:#d9f8df!important}
+.wrong{background:#ffe0e0!important}
+.progress{
+ background:#e8e1fa;height:12px;border-radius:20px;
+ overflow:hidden;margin:15px 0;
+}
+#bar{background:#895cdd;height:100%;width:0%}
+.passage{
+ background:#fff8e9;padding:20px;border-radius:15px;
+ line-height:1.8;margin:15px 0;
+}
+#feedback{font-weight:bold;margin:15px 0}
+.stats{display:flex;gap:15px;flex-wrap:wrap}
+.stat{
+ background:#f2edff;padding:15px;border-radius:15px;
+ flex:1;text-align:center;min-width:110px;
+}
+#login{max-width:600px;margin:auto;text-align:center}
+footer{
+ text-align:center;padding:30px;background:#30234f;
+ color:white;margin-top:50px;
+}
+.small{color:#827a9c;font-size:14px}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="owl">🦉</div>
+ <h1>Welcome to Brainy Kids 🧠</h1>
+ <p>Think • Learn • Play • Become a Genius!</p>
+ <p>✨ Your learning adventure starts here ✨</p>
+</header>
+
+<nav>
+ <button onclick="home()">🏠 Home</button>
+ <button onclick="showLogin()">👤 Student</button>
+ <button onclick="showSubjects()">🎮 Games</button>
+ <button onclick="startReading()">📖 Reading</button>
+ <button onclick="startQuiz('brain')">🧠 Brain Test</button>
+</nav>
+
+<div class="container">
+
+<section id="login" class="card">
+ <h2>🌟 Create Your Student Profile</h2>
+ <p>Welcome, future genius!</p>
+ <div style="margin:20px">
+  <input id="student" placeholder="Enter your nickname">
+  <br>
+  <select id="country">
+   <option value="">Choose your country (optional)</option>
+   <option>India</option>
+   <option>United States</option>
+   <option>United Kingdom</option>
+   <option>Canada</option>
+   <option>Australia</option>
+   <option>Other</option>
+  </select>
+  <br>
+  <button class="btn" onclick="login()">Start Learning 🚀</button>
+  <br><br>
+  <button class="btn" onclick="googleInfo()">🌐 Continue with Google</button>
+  <p class="small" style="margin-top:15px">
+   Demo profile is saved on this device. Google sign-in needs
+   secure authentication setup. Never enter your Google password here.
+  </p>
+ </div>
+</section>
+
+<section id="dashboard" style="display:none">
+ <div class="card">
+  <h2 id="welcome">Welcome, Student! 🎉</h2>
+  <p>Ready for today's challenges?</p>
+  <br>
+  <div class="stats">
+   <div class="stat"><h2 id="points">0</h2>⭐ Stars</div>
+   <div class="stat"><h2 id="completed">0</h2>🏆 Correct answers</div>
+   <div class="stat"><h2 id="level">1</h2>🚀 Current level</div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h2>📚 Your Learning Adventure</h2>
+  <p>Each subject has 100 questions per level.
+  Complete a level to unlock the next one!</p>
+  <p class="small">Levels continue automatically without a fixed final level.</p>
+ </div>
+</section>
+
+<section id="subjects" style="display:none">
+ <h2>🎮 Choose Your Subject</h2>
+ <p style="margin-bottom:20px">Choose a subject to begin your challenge.</p>
+ <div class="grid">
+  <div class="subject">
+   <div class="emoji">➗</div>
+   <h2>Grade 6 Maths</h2>
+   <p>Fractions, geometry, patterns, factors and more.</p>
+   <button class="btn" onclick="startQuiz('math')">Play Maths</button>
+  </div>
+  <div class="subject">
+   <div class="emoji">🌍</div>
+   <h2>General Knowledge</h2>
+   <p>Discover the world around you.</p>
+   <button class="btn" onclick="startQuiz('gk')">Play GK</button>
+  </div>
+  <div class="subject">
+   <div class="emoji">🏛️</div>
+   <h2>Social Studies</h2>
+   <p>History, geography and civics.</p>
+   <button class="btn" onclick="startQuiz('social')">Play Social</button>
+  </div>
+  <div class="subject">
+   <div class="emoji">🔤</div>
+   <h2>English</h2>
+   <p>Vocabulary, grammar and language.</p>
+   <button class="btn" onclick="startQuiz('english')">Play English</button>
+  </div>
+  <div class="subject">
+   <div class="emoji">🧠</div>
+   <h2>Brainy Tests</h2>
+   <p>Logic, patterns and difficult puzzles.</p>
+   <button class="btn" onclick="startQuiz('brain')">Start Brain Test</button>
+  </div>
+  <div class="subject">
+   <div class="emoji">📖</div>
+   <h2>Reading Challenge</h2>
+   <p>Read five passages and answer six questions for each.</p>
+   <button class="btn" onclick="startReading()">Read Now</button>
+  </div>
+ </div>
+</section>
+
+<section id="quiz" class="card">
+ <h2 id="quizTitle">Quiz</h2>
+ <div class="stats">
+  <div class="stat">Level <b id="qLevel">1</b></div>
+  <div class="stat">Question <b id="qNumber">1</b>/100</div>
+  <div class="stat">⭐ <b id="qScore">0</b></div>
+ </div>
+ <div class="progress"><div id="bar"></div></div>
+ <div id="question"></div>
+ <div id="options"></div>
+ <div id="feedback"></div>
+ <button class="btn" onclick="nextQuestion()" id="next" style="display:none">Next Question →</button>
+ <button class="btn" onclick="showSubjects()">Exit Quiz</button>
+</section>
+
+<section id="reading" class="card" style="display:none">
+ <h2>📖 Reading Adventure</h2>
+ <p id="passageCount"></p>
+ <div class="passage">
+  <h3 id="passageTitle"></h3>
+  <p id="passageText"></p>
+ </div>
+ <div id="readingQuestion"></div>
+ <div id="readingOptions"></div>
+ <div id="readingFeedback"></div>
+ <button class="btn" id="readingNext" style="display:none" onclick="nextReading()">Next →</button>
+ <button class="btn" onclick="home()">Home</button>
+</section>
+
+</div>
+
+<footer>
+ <h2>🦉 Brainy Kids 🧠</h2>
+ <p>Where learning becomes an adventure!</p>
+ <p>Made with 💜 for curious minds.</p>
+</footer>
+
+<script>
+
+// STUDENT PROFILE
+
+let name = localStorage.getItem("bk_name") || "";
+let country = localStorage.getItem("bk_country") || "";
+let stars = Number(localStorage.getItem("bk_stars") || 0);
+let completed = Number(localStorage.getItem("bk_completed") || 0);
+
+function save(){
+ localStorage.setItem("bk_stars",stars);
+ localStorage.setItem("bk_completed",completed);
+}
+
+function login(){
+ name=document.getElementById("student").value.trim();
+ country=document.getElementById("country").value;
+ if(!name){alert("Please enter a nickname!");return}
+ localStorage.setItem("bk_name",name);
+ localStorage.setItem("bk_country",country);
+ home();
+}
+
+function googleInfo(){
+ alert("Google sign-in is not connected yet. A secure Google/Firebase project is needed to enable real sign-in.");
+}
+
+function updateStats(){
+ document.getElementById("points").innerText=stars;
+ document.getElementById("completed").innerText=completed;
+ document.getElementById("level").innerText=level;
+ document.getElementById("qScore").innerText=quizScore;
+}
+
+function hideAll(){
+ ["login","dashboard","subjects","quiz","reading"].forEach(id=>{
+  document.getElementById(id).style.display="none";
+ });
+}
+
+function home(){
+ hideAll();
+ if(!name){showLogin();return}
+ document.getElementById("dashboard").style.display="block";
+ document.getElementById("welcome").innerText="Welcome, "+name+"! 🌟";
+ updateStats();
+}
+
+function showLogin(){
+ hideAll();
+ document.getElementById("login").style.display="block";
+ document.getElementById("student").value=name;
+}
+
+function showSubjects(){
+ hideAll();
+ document.getElementById("subjects").style.display="block";
+}
+
+// QUESTION GENERATORS
+// Every subject creates 100 questions per level.
+
+let facts=[
+ ["Which is the largest planet?","Jupiter",["Mars","Earth","Venus"]],
+ ["Which gas do plants absorb?","Carbon dioxide",["Oxygen","Nitrogen","Hydrogen"]],
+ ["How many continents are there?","7",["5","6","8"]],
+ ["Which is the fastest land animal?","Cheetah",["Lion","Horse","Tiger"]],
+ ["What is the capital of Japan?","Tokyo",["Seoul","Beijing","Bangkok"]],
+ ["Which organ pumps blood?","Heart",["Lungs","Brain","Kidney"]],
+ ["Which is the largest ocean?","Pacific Ocean",["Indian Ocean","Arctic Ocean","Atlantic Ocean"]],
+ ["How many days are in a leap year?","366",["365","364","367"]],
+ ["Which star is nearest to Earth?","The Sun",["Sirius","Polaris","Vega"]],
+ ["What is the hardest natural substance?","Diamond",["Iron","Gold","Silver"]],
+ ["Which animal is called the ship of the desert?","Camel",["Horse","Elephant","Yak"]],
+ ["What is H2O commonly called?","Water",["Salt","Oxygen","Hydrogen"]],
+ ["Which planet has rings most famously?","Saturn",["Earth","Mars","Mercury"]],
+ ["How many sides has a hexagon?","6",["5","7","8"]],
+ ["Which bird is known for mimicking sounds?","Parrot",["Crow","Eagle","Sparrow"]],
+ ["Which is the smallest prime number?","2",["1","3","0"]],
+ ["Which metal is liquid at room temperature?","Mercury",["Iron","Copper","Aluminium"]],
+ ["What do bees collect from flowers?","Nectar",["Sand","Leaves","Bark"]],
+ ["Which instrument measures temperature?","Thermometer",["Barometer","Compass","Ruler"]],
+ ["Which is the largest mammal?","Blue whale",["Elephant","Giraffe","Shark"]]
+];
+
+let socialFacts=[
+ ["Which civilization built the Great Bath?","Indus Valley Civilization",["Roman","Egyptian","Greek"]],
+ ["What is the capital of India?","New Delhi",["Mumbai","Chennai","Kolkata"]],
+ ["Who was known as the Iron Man of India?","Sardar Vallabhbhai Patel",["Mahatma Gandhi","Subhas Chandra Bose","Jawaharlal Nehru"]],
+ ["Which river is considered sacred in India?","Ganga",["Nile","Amazon","Thames"]],
+ ["What is a globe?","A model of Earth",["A map of the Moon","A compass","A mountain"]],
+ ["Who studies the past?","Historian",["Doctor","Pilot","Engineer"]],
+ ["What is the local self-government in a village called?","Gram Panchayat",["Parliament","Supreme Court","Municipality"]],
+ ["Which is the largest state in India by area?","Rajasthan",["Goa","Kerala","Punjab"]],
+ ["Which direction does the Sun rise from?","East",["West","North","South"]],
+ ["What is the imaginary line at 0 degrees latitude?","Equator",["Tropic of Cancer","Prime Meridian","Arctic Circle"]],
+ ["Which ancient civilization developed along the Nile?","Egyptian civilization",["Indus civilization","Mayan civilization","Roman civilization"]],
+ ["What is democracy?","Government by the people",["Rule by one king","Rule by soldiers","Rule by a company"]],
+ ["Which is the national animal of India?","Bengal tiger",["Lion","Elephant","Leopard"]],
+ ["What is a map key used for?","Explaining symbols",["Measuring temperature","Counting people","Showing time"]],
+ ["Which ocean lies south of India?","Indian Ocean",["Arctic Ocean","Pacific Ocean","Atlantic Ocean"]],
+ ["What is the study of Earth's surface called?","Geography",["Biology","Chemistry","Astronomy"]],
+ ["What was the ancient Indian writing system of the Indus people?","Not yet fully deciphered",["Fully translated Sanskrit","Latin","Greek"]],
+ ["What is a constitution?","A country's fundamental rules",["A weather report","A travel map","A storybook"]],
+ ["Which is the highest mountain range in the world?","Himalayas",["Andes","Alps","Aravalli"]],
+ ["Which body makes laws for India?","Parliament",["Police station","Hospital","School"]]
+];
+
+let words=[
+ ["Happy","Joyful",["Angry","Sad","Tired"]],
+ ["Ancient","Modern",["Old","Historic","Past"]],
+ ["Brave","Courageous",["Fearful","Weak","Lazy"]],
+ ["Begin","Start",["Finish","Stop","Close"]],
+ ["Tiny","Small",["Huge","Wide","Tall"]],
+ ["Rapid","Fast",["Slow","Late","Still"]],
+ ["Honest","Truthful",["Dishonest","Careless","Cruel"]],
+ ["Silent","Quiet",["Noisy","Loud","Bright"]],
+ ["Difficult","Hard",["Easy","Simple","Light"]],
+ ["Beautiful","Lovely",["Ugly","Plain","Rough"]],
+ ["Expand","Enlarge",["Shrink","Reduce","Close"]],
+ ["Victory","Success",["Defeat","Failure","Loss"]],
+ ["Purchase","Buy",["Sell","Give","Borrow"]],
+ ["Protect","Defend",["Attack","Harm","Break"]],
+ ["Observe","Notice",["Ignore","Forget","Hide"]],
+ ["Generous","Giving",["Selfish","Greedy","Mean"]],
+ ["Polite","Courteous",["Rude","Angry","Careless"]],
+ ["Vacant","Empty",["Full","Busy","Crowded"]],
+ ["Permit","Allow",["Forbid","Refuse","Stop"]],
+ ["Fragile","Delicate",["Strong","Hard","Tough"]]
+];
+
+let quizType="",questions=[],qIndex=0,quizScore=0,level=1,answered=false;
+
+function makeMath(i){
+ let a=12+(i*7)%45,b=3+(i*3)%12;
+ let type=i%10;
+ let q,ans;
+ if(type===0){q=`Calculate ${a} + ${b}`;ans=a+b}
+ if(type===1){q=`Calculate ${a+b} - ${b}`;ans=a}
+ if(type===2){q=`Calculate ${a} × ${b}`;ans=a*b}
+ if(type===3){q=`Calculate ${a*b} ÷ ${b}`;ans=a}
+ if(type===4){q=`What is ${a*2} ÷ 2?`;ans=a}
+ if(type===5){q=`Find the next number: ${a}, ${a+3}, ${a+6}, ${a+9}, ?`;ans=a+12}
+ if(type===6){q=`What is the perimeter of a square with side ${b} cm?`;ans=4*b}
+ if(type===7){q=`What is half of ${a*2}?`;ans=a}
+ if(type===8){q=`How many degrees are in a straight angle?`;ans=180}
+ if(type===9){q=`Find the HCF of ${b*2} and ${b*3}`;ans=b}
+ return {q,a:ans};
+}
+
+function makeBrain(i){
+ let a=5+(i*7)%30;
+ let type=i%5;
+ if(type===0)return {q:`Complete: ${a}, ${a+2}, ${a+4}, ${a+6}, ?`,a:a+8};
+ if(type===1)return {q:`If 3 pencils cost ${a*3} coins, how much does one pencil cost?`,a:a};
+ if(type===2)return {q:`What is the next number: ${a}, ${a*2}, ${a*4}, ${a*8}, ?`,a:a*16};
+ if(type===3)return {q:`A number plus ${a} equals ${a*2}. What is the number?`,a:a};
+ return {q:`How many sides do ${a} triangles have altogether?`,a:a*3};
+}
+
+function makeBank(type){
+ let arr=[];
+ for(let i=0;i<100;i++){
+  let item;
+  if(type==="math")item=makeMath(i+(level-1)*100);
+  if(type==="brain")item=makeBrain(i+(level-1)*100);
+  if(type==="gk")item=facts[(i+(level-1)*3)%facts.length];
+  if(type==="social")item=socialFacts[(i+(level-1)*3)%socialFacts.length];
+  if(type==="english")item=words[(i+(level-1)*3)%words.length];
+
+  if(type==="math"||type==="brain"){
+   let answer=item.a;
+   let opts=[answer,answer+3,answer+7,Math.max(0,answer-4)];
+   opts=[...new Set(opts)].slice(0,4);
+   while(opts.length<4)opts.push(answer+opts.length+10);
+   arr.push({q:item.q,a:String(answer),opts:opts.map(String)});
+  }else{
+   let [q,a,wrong]=item;
+   arr.push({q,a,opts:[a,...wrong]});
+  }
+ }
+ return arr;
+}
+
+// QUIZ
+
+function startQuiz(type){
+ if(!name){showLogin();return}
+ hideAll();
+ quizType=type;
+ level=Number(localStorage.getItem("level_"+type)||1);
+ quizScore=0;qIndex=0;
+ questions=makeBank(type);
+ document.getElementById("quiz").style.display="block";
+ let titles={math:"➗ Grade 6 Maths",gk:"🌍 General Knowledge",social:"🏛️ Social Studies",english:"🔤 English",brain:"🧠 Brainy Challenge"};
+ document.getElementById("quizTitle").innerText=titles[type];
+ showQuestion();
+}
+
+function showQuestion(){
+ answered=false;
+ let item=questions[qIndex];
+ document.getElementById("qLevel").innerText=level;
+ document.getElementById("qNumber").innerText=qIndex+1;
+ document.getElementById("bar").style.width=(qIndex+1)+"%";
+ document.getElementById("question").innerText=item.q;
+ document.getElementById("feedback").innerText="";
+ document.getElementById("next").style.display="none";
+ let opts=[...item.opts].sort(()=>Math.random()-.5);
+ document.getElementById("options").innerHTML="";
+ opts.forEach(opt=>{
+  let b=document.createElement("button");
+  b.className="option";b.innerText=opt;
+  b.onclick=()=>checkAnswer(opt,b);
+  document.getElementById("options").appendChild(b);
+ });
+}
+
+function checkAnswer(value,button){
+ if(answered)return;
+ answered=true;
+ let item=questions[qIndex];
+ let correct=String(value)===String(item.a);
+ document.querySelectorAll(".option").forEach(b=>{
+  b.disabled=true;
+  if(b.innerText===String(item.a))b.classList.add("correct");
+ });
+ if(correct){
+  quizScore++;stars++;completed++;
+  save();
+  document.getElementById("feedback").innerText="🎉 Excellent! +1 star!";
+ }else{
+  button.classList.add("wrong");
+  document.getElementById("feedback").innerText="Good try! Correct answer: "+item.a;
+ }
+ updateStats();
+ document.getElementById("next").style.display="inline-block";
+}
+
+function nextQuestion(){
+ if(!answered)return;
+ qIndex++;
+ if(qIndex>=100){
+  level++;
+  localStorage.setItem("level_"+quizType,level);
+  document.getElementById("question").innerHTML=
+   "🏆 LEVEL COMPLETED!<br><br>You earned "+quizScore+" correct answers!";
+  document.getElementById("options").innerHTML=
+   "<h2>🌟 New level unlocked!</h2>";
+  document.getElementById("next").innerText="Start Level "+level+" →";
+  document.getElementById("next").onclick=()=>startQuiz(quizType);
+  document.getElementById("bar").style.width="100%";
+  return;
+ }
+ showQuestion();
+}
+
+// FIVE READING PASSAGES, SIX QUESTIONS EACH
+
+let passages=[
+{
+title:"The Clever Little Owl",
+text:"In a quiet forest lived a little owl named Oliver. Every night, Oliver watched the stars and listened to the sounds of the forest. One evening, he noticed that a small rabbit had lost its way. Oliver flew above the trees and guided the rabbit towards its home. The rabbit thanked Oliver for his kindness. Oliver learned that even a small act of help can make a big difference.",
+qs:[
+["What was the owl's name?","Oliver",["Oscar","Ollie","Orion"]],
+["Where did Oliver live?","In a forest",["In a city","In a desert","Near a sea"]],
+["When did Oliver watch the stars?","At night",["At noon","In the morning","In the afternoon"]],
+["Who lost its way?","A rabbit",["A fox","A deer","A squirrel"]],
+["How did Oliver help?","He guided the rabbit home",["He gave it food","He built a house","He called a farmer"]],
+["What did Oliver learn?","Helping others makes a difference",["Never fly at night","Stars are planets","Rabbits cannot run"]]
+]},
+{
+title:"A Visit to the Museum",
+text:"Meena's class visited a history museum on Friday. Their teacher showed them ancient pots, coins and tools. Meena was especially interested in a model of the Indus Valley Civilization. She learned that many ancient cities had planned streets and drainage systems. The guide explained that studying old objects helps us understand how people lived long ago. Meena decided to read more history books.",
+qs:[
+["Where did Meena's class go?","A history museum",["A zoo","A library","A beach"]],
+["When was the visit?","Friday",["Monday","Sunday","Wednesday"]],
+["What objects did they see?","Pots, coins and tools",["Cars and phones","Clothes and toys","Boats and planes"]],
+["What interested Meena most?","A model of the Indus Valley Civilization",["A dinosaur","A painting","A modern train"]],
+["What did ancient cities have?","Planned streets and drainage systems",["Airports","Shopping malls","Skyscrapers"]],
+["What did Meena decide to do?","Read more history books",["Stop studying","Become a guide immediately","Buy a museum"]]
+]},
+{
+title:"The Water-Saving Garden",
+text:"Ravi and his sister planted vegetables in their garden. They wanted to save water, so they collected rainwater in a large container. They watered the plants early in the morning. They also placed dry leaves around the plants to keep the soil moist. After several weeks, the garden produced tomatoes, beans and spinach. Their family enjoyed the fresh vegetables and felt proud of their work.",
+qs:[
+["Who planted the vegetables?","Ravi and his sister",["Ravi and his friend","His parents","His teacher"]],
+["What did they collect?","Rainwater",["Milk","Sea water","Juice"]],
+["When did they water plants?","Early in the morning",["At midnight","At noon","Late at night"]],
+["Why did they place dry leaves around plants?","To keep the soil moist",["To cover the flowers","To make toys","To stop sunlight completely"]],
+["Which vegetable was not mentioned?","Potato",["Tomato","Beans","Spinach"]],
+["How did the family feel?","Proud",["Angry","Bored","Worried"]]
+]},
+{
+title:"The Journey of a Seed",
+text:"A tiny seed fell from a tall tree onto the soft soil. Rainwater helped it grow, while sunlight provided energy. Slowly, a small root grew down into the soil and a shoot grew upwards. The young plant developed leaves and became stronger. Years later, it grew into a large tree. Birds built nests in its branches and people enjoyed its shade. A tiny seed had become a home for many living things.",
+qs:[
+["Where did the seed fall?","Onto soft soil",["Into a river","On a roof","On a road"]],
+["What helped the seed grow?","Rainwater and sunlight",["Only wind","Only stones","Only sand"]],
+["Which part grew downwards?","Root",["Shoot","Leaf","Flower"]],
+["Which part grew upwards?","Shoot",["Root","Seed coat","Fruit"]],
+["Who built nests in the tree?","Birds",["Fish","Lizards only","Butterflies only"]],
+["What did the seed become?","A large tree",["A small stone","A flower pot","A river"]]
+]},
+{
+title:"The Power of Teamwork",
+text:"Four students were asked to prepare a science exhibition. Anu designed the posters, Bala collected information, Charan made a model and Divya explained the project. At first, they had different ideas and found it difficult to agree. Their teacher encouraged them to listen to each other. They shared their ideas and combined the best parts. On exhibition day, visitors appreciated their project. The students understood that teamwork and respect help people achieve common goals.",
+qs:[
+["How many students worked together?","Four",["Two","Three","Five"]],
+["Who designed the posters?","Anu",["Bala","Charan","Divya"]],
+["Who made the model?","Charan",["Anu","Bala","Divya"]],
+["What problem did they first face?","They had different ideas",["They lost the model","They forgot the date","They had no teacher"]],
+["What did their teacher encourage?","Listening to each other",["Working alone","Ignoring ideas","Leaving the project"]],
+["What is the main lesson?","Teamwork and respect are important",["Never share ideas","Only one person should work","Projects are not useful"]]
+]}
+];
+
+let pIndex=0,rIndex=0,readingScore=0;
+
+function startReading(){
+ if(!name){showLogin();return}
+ hideAll();
+ document.getElementById("reading").style.display="block";
+ pIndex=0;rIndex=0;readingScore=0;
+ showReading();
+}
+
+function showReading(){
+ let p=passages[pIndex];
+ document.getElementById("passageCount").innerText=
+ "Passage "+(pIndex+1)+" of 5 | Question "+(rIndex+1)+" of 6";
+ document.getElementById("passageTitle").innerText=p.title;
+ document.getElementById("passageText").innerText=p.text;
+ let q=p.qs[rIndex];
+ document.getElementById("readingQuestion").innerHTML="<h3>"+q[0]+"</h3>";
+ document.getElementById("readingOptions").innerHTML="";
+ document.getElementById("readingFeedback").innerText="";
+ document.getElementById("readingNext").style.display="none";
+ [...q[2],q[1]].sort(()=>Math.random()-.5).forEach(opt=>{
+  let b=document.createElement("button");
+  b.className="option";b.innerText=opt;
+  b.onclick=()=>readingAnswer(opt,b);
+  document.getElementById("readingOptions").appendChild(b);
+ });
+}
+
+function readingAnswer(value,button){
+ let q=passages[pIndex].qs[rIndex];
+ document.querySelectorAll("#readingOptions button").forEach(b=>b.disabled=true);
+ if(value===q[1]){
+  readingScore++;stars++;completed++;save();updateStats();
+  document.getElementById("readingFeedback").innerText="🎉 Correct! +1 star!";
+ }else{
+  button.classList.add("wrong");
+  document.getElementById("readingFeedback").innerText="Correct answer: "+q[1];
+ }
+ document.getElementById("readingNext").style.display="inline-block";
+}
+
+function nextReading(){
+ rIndex++;
+ if(rIndex===6){
+  pIndex++;rIndex=0;
+  if(pIndex===5){
+   document.getElementById("passageTitle").innerText="🏆 Reading Challenge Completed!";
+   document.getElementById("passageText").innerText=
+    "Wonderful work! You completed all five passages and 30 questions. Your score: "+readingScore+"/30";
+   document.getElementById("readingQuestion").innerText="";
+   document.getElementById("readingOptions").innerHTML="";
+   document.getElementById("readingFeedback").innerText="Keep reading and keep growing! 🦉";
+   document.getElementById("readingNext").style.display="none";
+   return;
+  }
+ }
+ showReading();
+}
+
+// INITIAL SCREEN
+
+if(name)home();
+else showLogin();
+
+</script>
+</body>
+</html>
